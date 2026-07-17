@@ -111,6 +111,9 @@ img { display: block; }
   background: #e8b4df;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: calc(max(env(safe-area-inset-top, 0px), 44px)) 20px calc(max(env(safe-area-inset-bottom, 0px), 24px));
 }
 .splash-bg {
   position: absolute;
@@ -131,10 +134,12 @@ img { display: block; }
     rgba(180,80,160,0.15) 100%);
 }
 
-/* All splash content positioned absolutely */
-#splash > *:not(.splash-bg):not(.petals):not(audio) {
-  position: absolute;
+/* Let flex handle positioning instead of absolute */
+#splash > *:not(.splash-bg):not(.petals):not(audio):not(.splash-overlay):not(.music-pill) {
+  position: relative;
   z-index: 2;
+  width: 100%;
+  max-width: 320px;
 }
 
 /* ── Music pill ──────────────────────────── */
@@ -175,11 +180,9 @@ img { display: block; }
 
 /* ── Bismillah calligraphy ────────────────── */
 .bismillah {
-  top: calc(max(env(safe-area-inset-top, 0px), 54px) + 41px);
-  left: 50%;
-  transform: translateX(-50%);
-  width: 104px;
-  height: 27px;
+  display: flex;
+  justify-content: center;
+  margin-top: 1vh;
 }
 .bismillah-img {
   width: 104px;
@@ -190,14 +193,10 @@ img { display: block; }
 
 /* ── Title logo / WEDDING INVITATION ────── */
 .splash-title-logo {
-  top: calc(max(env(safe-area-inset-top, 0px), 54px) + 80px);
-  left: 50%;
-  transform: translateX(-50%);
-  width: 300px;
-  height: 116px;
   display: flex;
   align-items: center;
   justify-content: center;
+  margin: 1vh 0;
 }
 .splash-title-img {
   width: 224px;
@@ -219,10 +218,7 @@ img { display: block; }
 
 /* ── Invite text ─────────────────────────── */
 .splash-invite {
-  top: calc(max(env(safe-area-inset-top, 0px), 54px) + 210px);
-  left: 50%;
-  transform: translateX(-50%);
-  width: min(298px, calc(100% - 32px));
+  margin: 1vh auto;
   font-family: var(--font-serif);
   font-size: 12.5px;
   font-weight: 300;
@@ -235,9 +231,6 @@ img { display: block; }
 
 /* ── Groom name ──────────────────────────── */
 .splash-groom {
-  top: calc(max(env(safe-area-inset-top, 0px), 54px) + 285px);
-  left: 50%;
-  transform: translateX(-50%);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -253,13 +246,9 @@ img { display: block; }
 
 /* ── "weds" badge ────────────────────────── */
 .splash-weds-wrap {
-  top: calc(max(env(safe-area-inset-top, 0px), 54px) + 352px);
-  left: 50%;
-  transform: translateX(-50%);
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 130px;
   height: 64px;
   z-index: 3;
 }
@@ -284,9 +273,6 @@ img { display: block; }
 
 /* ── Bride name ──────────────────────────── */
 .splash-bride {
-  top: calc(max(env(safe-area-inset-top, 0px), 54px) + 408px);
-  left: 50%;
-  transform: translateX(-50%);
   font-family: var(--font-astonia);
   font-size: clamp(34px, 10.1vw, 40px);
   font-weight: 400;
@@ -299,9 +285,8 @@ img { display: block; }
 
 /* ── Countdown ───────────────────────────── */
 .countdown {
-  top: calc(max(env(safe-area-inset-top, 0px), 54px) + 487px);
-  left: 0; right: 0;
   display: flex;
+  margin: 1vh 0;
   align-items: flex-end;
   justify-content: center;
   gap: 5px;
@@ -362,10 +347,8 @@ img { display: block; }
 
 /* ── Event Date / Venue ──────────────────── */
 .event-meta {
-  top: calc(max(env(safe-area-inset-top, 0px), 54px) + 607px);
-  left: 0; right: 0;
   text-align: center;
-  padding: 0 24px;
+  margin: 1vh 0;
 }
 .event-date,
 .event-venue {
@@ -379,10 +362,8 @@ img { display: block; }
 
 /* ── Swipe CTA ───────────────────────────── */
 .swipe-wrap {
-  bottom: calc(env(safe-area-inset-bottom, 34px) + 22px);
-  left: 50%;
-  transform: translateX(-50%);
-  width: min(296px, calc(100% - 48px));
+  width: min(296px, calc(100% - 40px));
+  margin: 1vh auto 0;
 }
 .swipe-track {
   position: relative;
@@ -1127,29 +1108,15 @@ img { display: block; }
 }
 
 /* ════════════════════════════════════════════
-   RESPONSIVE — COMPACT HEIGHTS (≤820px)
+   RESPONSIVE — COMPACT SCREENS
 ════════════════════════════════════════════ */
 @media (max-height: 820px) {
-  .splash-groom, .splash-bride { font-size: clamp(26px, 7.7vw, 30px); }
-  .splash-weds  { font-size: clamp(28px, 8.9vw, 32px); }
-
+  /* Flexbox naturally handles spacing, but we can scale down the countdown slightly */
   .count-box       { width: 54px; height: 70px; }
   .count-box span  { font-size: 24px; }
   .count-label     { font-size: 12px; }
   .count-sep       { padding-bottom: 28px; }
-
-  .swipe-wrap {
-    bottom: calc(max(env(safe-area-inset-bottom, 0px), 20px) + 16px);
-  }
-  .event-meta {
-    top: auto;
-    bottom: calc(max(env(safe-area-inset-bottom, 0px), 20px) + 96px);
-  }
-  .countdown {
-    top: auto;
-    bottom: calc(max(env(safe-area-inset-bottom, 0px), 20px) + 148px);
-  }
-
+  
   .swipe-track  { height: 68px; }
   .swipe-thumb  { width: 54px; height: 54px; }
   .swipe-label  { padding-left: 70px; font-size: 13px; }
@@ -1160,27 +1127,10 @@ img { display: block; }
    RESPONSIVE — TINY SCREENS (≤700px, e.g. SE)
 ════════════════════════════════════════════ */
 @media (max-height: 700px) {
-  .splash-invite {
-    top: calc(max(env(safe-area-inset-top, 0px), 44px) + 210px);
-    font-size: 10px;
-  }
-  .splash-groom {
-    top: calc(max(env(safe-area-inset-top, 0px), 44px) + 238px);
-    font-size: clamp(22px, 6.5vw, 24px);
-  }
-  .splash-weds-wrap {
-    top: calc(max(env(safe-area-inset-top, 0px), 44px) + 284px);
-    width: 100px; height: 48px;
-  }
-  .splash-bride {
-    top: calc(max(env(safe-area-inset-top, 0px), 44px) + 330px);
-    font-size: clamp(22px, 6.5vw, 24px);
-  }
-  .countdown {
-    bottom: calc(max(env(safe-area-inset-bottom, 0px), 16px) + 152px);
-  }
+  .splash-groom, .splash-bride { font-size: clamp(24px, 7.5vw, 28px); }
+  .splash-weds-wrap { height: 48px; }
+  .splash-weds { font-size: clamp(26px, 8vw, 32px); }
 }
-
 /* ════════════════════════════════════════════
    DESKTOP — CENTERED PHONE FRAME
 ════════════════════════════════════════════ */
