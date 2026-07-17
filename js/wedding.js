@@ -127,6 +127,12 @@ setInterval(updateCountdown, 1000);
     swipeThumb.style.transition = 'none';
     swipeFill.style.transition  = 'none';
     swipeTrack.style.cursor     = 'grabbing';
+    
+    // Unlock audio immediately on touch/mousedown for Android Chrome
+    if (bgMusic && !musicStarted) {
+      bgMusic.volume = 0;
+      bgMusic.play().catch(() => {});
+    }
   }
 
   function onDragMove(clientX) {
