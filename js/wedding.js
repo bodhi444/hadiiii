@@ -131,7 +131,9 @@ setInterval(updateCountdown, 1000);
     // Unlock audio immediately on touch/mousedown for Android Chrome
     if (bgMusic && !musicStarted) {
       bgMusic.volume = 0;
-      bgMusic.play().catch(() => {});
+      bgMusic.play().then(() => {
+        musicStarted = true;
+      }).catch(() => {});
     }
   }
 
@@ -176,19 +178,22 @@ setInterval(updateCountdown, 1000);
       swipeLabel.style.opacity = '1';
     }, 250);
 
-    // ── Start music SYNCHRONOUSLY during user gesture ──────────
-    // bgMusic.play() must be called within the touchend/mouseup
-    // event handler — any setTimeout breaks the autoplay policy.
-    if (bgMusic && !musicStarted) {
-      bgMusic.volume = 0;
-      bgMusic.play().then(() => {
+    // ── Start music ──────────
+    if (bgMusic) {
+      if (musicStarted || !bgMusic.paused) {
         musicStarted = true;
         musicMuted   = false;
         updateMusicUI();
-        fadeVolume(0, 0.55, 2000);
-      }).catch(() => {
-        // Autoplay blocked — user can tap the music pill to start
-      });
+        fadeVolume(bgMusic.volume, 0.55, 2000);
+      } else {
+        bgMusic.volume = 0;
+        bgMusic.play().then(() => {
+          musicStarted = true;
+          musicMuted   = false;
+          updateMusicUI();
+          fadeVolume(0, 0.55, 2000);
+        }).catch(() => {});
+      }
     }
 
     // Page reveal can safely be deferred (it's UI only)
@@ -200,6 +205,7 @@ setInterval(updateCountdown, 1000);
     e.preventDefault();
     onDragStart(e.touches[0].clientX);
   }, { passive: false });
+
 
   document.addEventListener('touchmove', e => {
     if (isDragging) {
@@ -377,3 +383,19 @@ if (typeof lucide !== 'undefined') lucide.createIcons();
     });
   });
 })();
+
+// ── Handle Page Visibility (pause music when backgrounded) ──────────
+document.addEventListener("visibilitychange", () => {
+  if (!bgMusic) return;
+  if (document.hidden) {
+    if (!bgMusic.paused) {
+      bgMusic.pause();
+      bgMusic._wasPlaying = true;
+    }
+  } else {
+    if (bgMusic._wasPlaying && !musicMuted) {
+      bgMusic.play().catch(() => {});
+      bgMusic._wasPlaying = false;
+    }
+  }
+});
